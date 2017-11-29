@@ -21,7 +21,8 @@ d3.json("./data/world-countries.json", function(mapJsonError, world) {
 
         map.update();
 
-
+   		var timeline = new Timeline();
+   		timeline.init(timelineSVG, data);
     });
 });
 
