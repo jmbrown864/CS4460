@@ -9,22 +9,17 @@ timelineWidth = timelineSVG.attr("width");
 timelineHeight = timelineSVG.attr("height");
 timelineSVG.attr("transform", "translate(" + [((window.innerWidth - timelineWidth)/2), ((window.innerHeight - timelineHeight)/2)] + ")");
 
-var tip = d3.tip()
-    .attr('class', 'd3-tip')
-    .offset([0, 0])
-    .html(function(d) {
-      return "<span class='details'>" + d.properties.name +"</span>";
-    });
-
-mapSVG.call(tip);
-
 d3.json("./data/world-countries.json", function(mapJsonError, world) {
     if (mapJsonError) throw mapJsonError;
-    var map = new Map(102, [(mapWidth / 2 - 12), (mapHeight/2)]);
-    map.init(mapSVG, world, tip);
+    var countries = topojson.feature(world, world.objects.countries1).features,
+      neighbors = topojson.neighbors(world.objects.countries1.geometries);
+    var map = new Map(133, [(mapWidth / 2 - 11), (mapHeight/2 - 12)]);
+    map.init(mapSVG, world, countries, neighbors);
 
     d3.csv('./data/nobel_laureates.csv', function(error, data) {
         if (error) throw error;
+
+        map.update();
 
 
     });
