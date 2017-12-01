@@ -8,28 +8,57 @@ timelineSVG.attr("transform", "translate(" + [((window.innerWidth - timelineWidt
 d3.csv('./data/nobel_laureates.csv', function(error, data) {
     if (error) throw error; 
 
-    var nlByAffiliation = d3.nest().key(function(d) {
+    var nlByAff = d3.nest().key(function(d) {
         return d.category;
     }).key(function(e) {
-        return e.affiliation;
+        if (e.affiliation_country === "") {
+            return "No Affiliation Country";
+        }
+        return e.affiliation_country;
+    }).key(function(z) {
+        if (z.affiliation === "none") {
+            return "No Affiliation";
+        }
+        return z.affiliation;
     }).rollup(function(v) {
         return v.length;
-    }).entries(data)
-    .sort(function(a, b) {
-        return d3.sum(b.values, function(c) { return c.value; }) - d3.sum(a.values, function(c) { return c.value; });
+    }).entries(data);
+    nlByAff = nlByAff.sort(function(a, b) {
+        return d3.sum(b.values, function(c) { 
+            return d3.sum(c.values, function(d) {
+                return d.value;
+            }); 
+        }) - d3.sum(a.values, function(c) { 
+            return d3.sum(c.values, function(d) {
+                return d.value;
+            }); 
+        });
     });
-    nlByAffiliation.forEach((category) => {
+    nlByAff.forEach((category) => {
         category.values.sort(function(a, b) {
-            return b.value - a.value;
+            return d3.sum(b.values, function(t) {
+                return t.value;
+            }) - d3.sum(a.values, function(t) {
+                return t.value;
+            });
+        });
+        category.values.forEach((country) => {
+            country.values.sort(function(a,b) {
+                return b.value - a.value;
+            });
         });
     });
 
-    nlByAffiliation = {"key": "Nobel Laureates", "values": nlByAffiliation}; 
-    nlByAffiliation = { "name": "Nobel Laureates", "label": "Nobel Laureates", "children":
-        nlByAffiliation.values.map( function(category) {
+    nlByAff = {"key": "Nobel Laureates", "values": nlByAff}; 
+    nlByAff = { "name": "Nobel Laureates", "label": "Nobel Laureates", "children":
+        nlByAff.values.map( function(category) {
             return { "name": category.key, "label": category.key, "children": 
-              category.values.map( function(aff) {
-                 return { "name": aff.key, "label": aff.key, "size": aff.value };
+              category.values.map( function(country) {
+                 return { "name": country.key, "label": country.key, "children": 
+                    country.values.map(function(aff) {
+                        return {"name": aff.key, "label": aff.key, "size": aff.value}
+                    }) 
+                };
               }) 
             }; 
         })
@@ -39,7 +68,7 @@ d3.csv('./data/nobel_laureates.csv', function(error, data) {
         .domain(["medicine", "peace", "chemistry", "literature", "physics", "economics"])
         .range(["#c2ddad", "#adc9dd", "#efab58", "#ffd026", "#d3baff", "#ed5e5e"]);
 
-    var root = d3.hierarchy(nlByAffiliation);
+    var root = d3.hierarchy(nlByAff);
     d3ZoomableTreemap('treemap', root, {
         sum_function: function(d) {
                     if (!d.hasOwnProperty('children'))
@@ -59,10 +88,7 @@ d3.csv('./data/nobel_laureates.csv', function(error, data) {
                     return number + " record";
                 default:
                     return number + " records";
-            }
-
-            
+            }            
         }
-    });
-    
+    });    
 });

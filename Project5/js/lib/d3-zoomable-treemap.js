@@ -252,6 +252,16 @@ function d3ZoomableTreemap(el_id, data, options) {
                 if (d.depth === 2) {
                     var parentColor = color_scale(d.parent.data.label);
                     var max = d3.max(d.parent.children, function(child) {
+                        return child.value;
+                    });
+                    var childColor = d3.scaleLinear()
+                        .domain([0, max])
+                        .range(["white", parentColor]);
+                    return childColor(d.value);
+                }
+                if (d.depth === 3) {
+                    var parentColor = color_scale(d.parent.parent.data.label);
+                    var max = d3.max(d.parent.children, function(child) {
                         return child.data.size;
                     });
                     var childColor = d3.scaleLinear()
