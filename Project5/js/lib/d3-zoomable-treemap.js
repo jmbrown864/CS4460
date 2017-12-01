@@ -1,3 +1,13 @@
+globalTreemapState = [{current: ""}];
+
+function getGlobalTreemapState() {
+    return globalTreemapState[0];
+}
+
+function setGlobalTreemapState(key, value) {
+    globalTreemapState[0][key] = value;
+}
+
 function d3ZoomableTreemap(el_id, data, options) {
 
     options = options || {};
@@ -242,7 +252,6 @@ function d3ZoomableTreemap(el_id, data, options) {
                 return y(d.y1) - y(d.y0);
             })
             .attr("fill", function (d) {
-                console.log(d);
                 if (d.depth === 0 || d.parent === null) {
                     return fill_color;
                 }
@@ -297,6 +306,8 @@ function d3ZoomableTreemap(el_id, data, options) {
     }
 
     function breadcrumbs(d) {
+        setGlobalTreemapState("current", d.data.label);
+        //console.log(d.data.label);
         var res = "";
         var sep = " > ";
         d.ancestors().reverse().forEach(function(i){
