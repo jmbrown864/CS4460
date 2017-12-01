@@ -7,6 +7,7 @@
     <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.9.0/css/bootstrap-slider.min.css">-->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/d3-zoomable-treemap.css">
 </head>
 <body>
     <nav class="navbar navbar-default navbar-fixed-top">
@@ -23,11 +24,7 @@
 	<div id="main">
         <div id="treemap-container" width="840" height="800">
             <a name="treemapAnchor"></a>
-            <svg id="treemap" width="840" height="800"></svg>
-            <form style="padding-top:60px; position:relative;left:50%;margin-left:-30px;">
-              <label><input type="radio" name="mode" value="sumBySize" checked> Size</label>
-              <label><input type="radio" name="mode" value="sumByCount"> Count</label>
-            </form>
+            <p id="treemap"></p>
         </div>
         <div id="timeline-container" width="840" height="800" style="padding-top:80px;">
             <a name="timelineAnchor"></a>
@@ -41,6 +38,7 @@
 <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
 <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
 <script src="./js/lib/d3-tip.js"></script>
+<script src="./js/lib/d3-zoomable-treemap.js"></script>
 <script src="./js/map.js"></script>
 <script src="./js/timeslide.js"></script>
 <script src="./js/main.js"></script>
