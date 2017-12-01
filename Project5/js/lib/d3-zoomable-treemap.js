@@ -34,6 +34,8 @@ function d3ZoomableTreemap(el_id, data, options) {
             options.zoom_in_msg || " - Click inside squares to zoom in",
         fill_color =
             options.fill_color || "#bbbbbb",
+        color_scale = 
+            options.color_scale || d3.scaleOrdinal(d3.schemeCategory10),
         debug =
             options.debug === undefined ? false : options.debug
     ;
@@ -47,6 +49,10 @@ function d3ZoomableTreemap(el_id, data, options) {
         width = full_width - margin.left - margin.right,
         height = full_height - margin.top - margin.bottom,
         transitioning;
+
+    var fader = function(color) { return d3.interpolateRgb(color, "#fff")(0.2); }
+
+
 
     // sets x and y scale to determine size of visible boxes
     var x = d3.scaleLinear()
@@ -106,8 +112,8 @@ function d3ZoomableTreemap(el_id, data, options) {
         grandparent
             .datum(d.parent)
             .select("rect")
-            .attr("fill", function () {
-                return fill_color
+            .attr("fill", function (d) {
+                return d === undefined ? fill_color : color_scale(d.data.label);
             });
 
         var g1 = svg.insert("g", ".grandparent")
@@ -236,7 +242,23 @@ function d3ZoomableTreemap(el_id, data, options) {
                 return y(d.y1) - y(d.y0);
             })
             .attr("fill", function (d) {
-                return fill_color;
+                console.log(d);
+                if (d.depth === 0 || d.parent === null) {
+                    return fill_color;
+                }
+                if (d.depth === 1) {
+                    return color_scale(d.data.label);
+                }
+                if (d.depth === 2) {
+                    var parentColor = color_scale(d.parent.data.label);
+                    var max = d3.max(d.parent.children, function(child) {
+                        return child.data.size;
+                    });
+                    var childColor = d3.scaleLinear()
+                        .domain([0, max])
+                        .range(["white", parentColor]);
+                    return childColor(d.data.size);
+                }
             });
     }
 

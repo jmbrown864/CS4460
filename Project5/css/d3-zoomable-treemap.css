@@ -22,8 +22,14 @@ rect.parent,
     stroke-width: 3px;
 }
 
+.grandparent rect {
+    fill: #fff;
+}
+
 .grandparent:hover rect {
-    fill: #ED8E7D;
+    stroke: #777;
+    fill: #fff;
+    border: 6px solid #777;
 }
 
 .children rect.parent,

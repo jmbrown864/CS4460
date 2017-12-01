@@ -35,6 +35,10 @@ d3.csv('./data/nobel_laureates.csv', function(error, data) {
         })
     }; 
 
+    var color = d3.scaleOrdinal()
+        .domain(["medicine", "peace", "chemistry", "literature", "physics", "economics"])
+        .range(["#c2ddad", "#adc9dd", "#efab58", "#ffd026", "#d3baff", "#ed5e5e"]);
+
     var root = d3.hierarchy(nlByAffiliation);
     d3ZoomableTreemap('treemap', root, {
         sum_function: function(d) {
@@ -45,10 +49,20 @@ d3.csv('./data/nobel_laureates.csv', function(error, data) {
                 }, 
         height: 840,
         margin_top: 60,
-        zoom_out_msg: "- click here to zoom out",
-        zoom_in_msg: "- click subcategories to zoom in",
-        fill_color: "#EDC4BD",
-        format_number: d3.format(".1f")
+        zoom_out_msg: " - click here to zoom out",
+        zoom_in_msg: " - click subcategories to zoom in",
+        fill_color: "#fff",
+        color_scale: color,
+        format_number: function (number) {
+            switch (number) {
+                case 1:
+                    return number + " record";
+                default:
+                    return number + " records";
+            }
+
+            
+        }
     });
     
 });
