@@ -64,6 +64,8 @@ d3.csv('./data/nobel_laureates.csv', function(error, data) {
         })
     }; 
 
+
+
     var color = d3.scaleOrdinal()
         .domain(["medicine", "peace", "chemistry", "literature", "physics", "economics"])
         .range(["#c2ddad", "#adc9dd", "#efab58", "#ffd026", "#d3baff", "#ed5e5e"]);
@@ -90,5 +92,16 @@ d3.csv('./data/nobel_laureates.csv', function(error, data) {
                     return number + " records";
             }            
         }
-    });    
+    }); 
+
+    var listAff = d3.nest().key(function(d) {
+        return d.affiliation;
+    }).rollup(function(e) {
+        return {
+            "name": e.fullname,
+            "description": e.motivation
+        };
+    }).entries(data);
+
+       
 });
