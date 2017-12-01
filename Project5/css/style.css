@@ -5,14 +5,13 @@ span.details {
 #main {
 }
 
-#map {
-    position: relative;
-    top: 100px;
-    left: 50%;
-    margin-left: -420px;
-    width: 840px;
-    height: 800px;
-    border: 1px solid #777;
+#rect {
+
+}
+
+#treemap {
+    overflow: hidden;
+    font-size: 10px;
 }
 
 body {
