@@ -101,7 +101,8 @@ d3.csv('./data/nobel_laureates.csv', function(error, data) {
             "name": e.fullname,
             "description": e.motivation
         };
-    }).entries(data);
-
-       
+    }).entries(data);   
+   		
+    var timeline = new Timeline();
+ 		timeline.init(timelineSVG, data);
 });
