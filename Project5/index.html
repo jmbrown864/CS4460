@@ -5,7 +5,9 @@
 	<title>Project 5</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.9.0/css/bootstrap-slider.min.css">-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/d3-zoomable-treemap.css">
 </head>
 <body>
     <nav class="navbar navbar-default navbar-fixed-top">
@@ -14,17 +16,17 @@
                 <a class="navbar-brand" href="#">CS 4460: P5 - Nobel Laureates</a>
             </div>
         <ul class="nav navbar-nav">
-            <li class="active"><a href="#mapAnchor">Map</a></li>
+            <li class="active"><a href="#treemapAnchor">Map</a></li>
             <li><a href="#timelineAnchor">Timeline</a></li>
         </ul>
         </div>
     </nav>
 	<div id="main">
-        <div id="map-container">
-            <a name="mapAnchor"></a>
-            <svg id="map" class="map" width="840" height="800" style="border: 1px solid #777; padding:10px;"></svg>
+        <div id="treemap-container" width="840" height="800">
+            <a name="treemapAnchor"></a>
+            <div id="treemap"></div>
         </div>
-        <div id="timeline-container" style="padding-top:80px;">
+        <div id="timeline-container" width="840" height="800" style="padding-top:80px;">
             <a name="timelineAnchor"></a>
             <svg id="timeline" class="timeline" width="840" height="800" style="border: 1px solid #777; padding:10px;"></svg>
         </div>
@@ -33,8 +35,12 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
 <script src="./js/lib/topojson.js"></script>
+<script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+<script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
 <script src="./js/lib/d3-tip.js"></script>
+<script src="./js/lib/d3-zoomable-treemap.js"></script>
 <script src="./js/map.js"></script>
 <script src="./js/timeline.js"></script>
+<script src="./js/timeslide.js"></script>
 <script src="./js/main.js"></script>
 </html>

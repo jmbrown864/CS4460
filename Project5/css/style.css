@@ -1,9 +1,5 @@
-span.details {
-    color: #f49e42;
-}
-
-#main {
-	paddin: 10px;
+#treemap {
+    overflow: hidden;
 }
 
 body {
