@@ -3,22 +3,48 @@ function Timeline() {
 }
 
 Timeline.prototype.init = function(g, dataset) {
-	console.log("Init!");
-
 	this.g = g;
 	this.dataset = dataset;
 
 	var _this = this;
 
 	var padding = {t: 20, r: 40, b: 110, l: 60},
-		padding2 = {t: 430, r: 40, b: 30, l: 60}, //padding for the mini overview
 		width = +g.attr('width') - padding.l - padding.r,
 		height = +g.attr('height') - padding.t - padding.b,
+		padding2 = {t: (+g.attr('height')-height), r: 40, b: 30, l: 60}, //padding for the mini overview
 		height2 = +g.attr('height') - padding2.t - padding2.b; // height for the mini overview
 
-	var color = d3.scaleOrdinal(d3.schemeCategory10);
+	// var color = d3.scaleOrdinal(d3.schemeCategory10);
+	var color = d3.scaleOrdinal()
+        .domain(["medicine", "peace", "chemistry", "literature", "physics", "economics"])
+        .range(["#c2ddad", "#adc9dd", "#efab58", "#ffd026", "#d3baff", "#ed5e5e"]);
+
+    var brush = d3.brushX()
+		.extent([[0,0], [width, height]])
+		.on('brush end', brushed);
+
+	var zoom = d3.zoom()
+		.scaleExtent([1, Infinity])
+		.translateExtent([1, Infinity])
+		.extent([[0,0], [width, height]])
+		.on('zoom', zoomed);
+
+	var tooltip = d3.tip()
+		.attr('class', 'd3-tip')
+		.offset([-12, 0])
+		.html(function(d) {
+			return '<div id="tooltip" width="100"> <h5> Awarded to <b>' + d.fullname + '</b> ' + d.motivation + '</h5></div>'
+		});
+
+	g.call(tooltip);
 
 	var x = d3.scaleTime()
+		.domain(d3.extent(dataset.map(function(d) {
+			return d.year;
+		})))
+		.range([0, width]);
+
+	var x2 = d3.scaleTime()
 		.domain(d3.extent(dataset.map(function(d) {
 			return d.year;
 		})))
@@ -30,6 +56,22 @@ Timeline.prototype.init = function(g, dataset) {
 		}))
 		.rangeRound([0, height])
 		.paddingInner(0.2);
+
+	var context = g.append('g')
+		.attr('class', 'context')
+		.attr('transform', 'translate(' + [padding2.l, padding2.t] + ')')
+		.attr('width', width)
+		.attr('height', height2);
+
+	context.append('g')
+		.attr('class', 'x-axis')
+		.attr('transform', 'translate(' + [0, height2] + ')')
+		.call(d3.axisBottom(x2).tickFormat(d3.format('.0f')));
+
+	context.append('g')
+		.attr('class', 'brush')
+		.call(brush)
+		.call(brush.move, x.range());
 
 	var container = g.append('g')
 		.attr('class', 'container')
@@ -50,10 +92,6 @@ Timeline.prototype.init = function(g, dataset) {
 		.attr('dy', '-30')
 		.attr('transform', 'rotate(-90)');
 
-	var categories = ['chemisty', 'literature', 'medicine', 'peace', 'physics', 'economics'];
-	var cellWidth = width,
-		cellHeight = y.bandwidth();
-
 	var category_container = container.selectAll('category-container')
 		.data(y.domain())
 		.enter()
@@ -64,7 +102,6 @@ Timeline.prototype.init = function(g, dataset) {
 		.attr('transform', function(d) { 
 			return 'translate(' + [0, y(d)] + ')'; 
 		});
-		// .attr('height', function(d) { return y.bandwidth(); });
 
 	var age = d3.scaleLinear()
 		.domain(d3.extent(dataset.map(function(d) {
@@ -79,8 +116,6 @@ Timeline.prototype.init = function(g, dataset) {
 	var nest_data = d3.nest()
 		.key(function(d) { return d.category; })
 		.entries(dataset);
-
-	console.log(nest_data);
 
 	category_container.selectAll('.dot')
 		.data(function(d, i) {
@@ -98,150 +133,79 @@ Timeline.prototype.init = function(g, dataset) {
 		})
 		.attr('fill', function(d) {
 			return color(d.category);
-		});
+		}).
+		attr('stroke', function(d) {
+			if (d.gender == 'female') return '#000';
+		})
+		.on('mouseover', tooltip.show)
+		.on('mouseout', tooltip.hide);
 
+	// function zoom(begin, end) {
+	// 	x.domain([begin, end-1]);
 
+	// 	// x.transition().duration(0).call(d3.axisBottom(x));
+	//     var t = g.transition().duration(0);
 
+	//     var size = end - begin;
+	//     var step = size / 10;
+	//     var ticks = [];
+	//     for (var i = 0; i <= 10; i++) {
+	//       ticks.push(Math.floor(begin + step * i));
+	//     }
 
+	//     // x.tickValues(ticks);
 
+	//     t.select("x-axis").call(x);
 
+	// }
 
+	// // Creates a bootstrap-slider element
+	// $("#yearSlider").slider({
+	//     tooltip: 'always',
+	//     tooltip_position:'bottom',
+	// });
+	// // Listens to the on "change" event for the slider
+	// $("#yearSlider").on('change', function(event){
+	//     // Update the chart on the new value
+	//     // updateChart(event.value.newValue);
+	//     console.log(event.value.newValue);
+	//     zoom(event.value.newValue[0], event.value.newValue[1]);
+	// });
 
-
-
-
-
-
-
-	// var nest_data = d3.nest()
-	// 	.key(function(d) { return d.category; })
-	// 	// .key(function(d) { return d.year; })
-	// 	.entries(dataset);
-
-	// // console.log(nest_data);
-
-	// // console.log(width);
-
-	// var brush = d3.brushX()
-	// 	.extent([[0,0], [width, height2]])
-	// 	.on('brush end', brushed);
-
-	// var zoom = d3.zoom()
-	// 	.scaleExtent([1, Infinity])
-	// 	.translateExtent([1, Infinity])
-	// 	.extent([[0,0], [width, height]])
-	// 	.on('zoom', zoomed);
-
-	// var parseDate = d3.timeParse("%y");
-
-	// var x = d3.scaleTime().range([0, width]),
-	// 	x2 = d3.scaleTime().range([0, width]);
-	// 	y = d3.scaleBand().rangeRound([0, height]);
-
-	// var xAxis = d3.axisBottom(x);
-	// 	xAxis2 = d3.axisBottom(x2);
-	// 	yAxis = d3.axisLeft(y);
-
-	// x.domain(d3.extent(dataset, function(d) { return d.year; }));
-	// x2.domain(x.domain());
-	// y.domain(nest_data.map(function(d) { return d.key; }))
-
-	// var context = g.append('g')
-	// 	.attr('class', 'context')
-	// 	.attr('width', width)
-	// 	.attr('height', height)
-	// 	.attr('transform', 'translate(' + [padding2.l, padding2.t] + ')');
-
-	// context.append('g')
-	// 	.attr('class', 'axis axis--x')
-	// 	.attr('transform', 'translate(' + [0, height2] + ')')
-	// 	.call(xAxis2.tickFormat(d3.format('.0f')));
-
-	// var focus = g.append('g')
-	// 	.attr('class', 'focus')
-	// 	.attr('wdith', width)
-	// 	.attr('height', height)
-	// 	.attr('transform', 'translate(' + [padding.l, padding.t] + ')');
-
-	// focus.append('g')
-	// 	.attr('class', 'axis axis--x')
-	// 	.attr('transform', 'translate(' + [0, height] + ')')
-	// 	.call(xAxis.tickFormat(d3.format('.0f')));
-
-	// focus.append('g')
-	// 	.attr('class', 'axis axis--y')
-	// 	.attr('transform', 'translate(0,0)')
-	// 	.call(yAxis);
-
-	// var yGrid = yAxis.tickSize(width, 0, 0).tickFormat('');
-
-	// focus.append('g')
-	// 	.attr('class', 'grid--y')
-	// 	.attr('transform', 'translate(' + [width, 0] + ')')
-	// 	.call(yGrid);
-
-	// // console.log(nest_data[0]);
-	// var categories = focus.selectAll('circle')
-	// 	.data(dataset)
-	// 	.enter()
-	// 	.append('circle')
-	// 	.attr('class', 'data-point')
-	// 	.attr('cx', function(d) {
-	// 		return x(d.year);
-	// 	})
-	// 	.attr('cy', function(d) {
-	// 		return y(d.category);
-	// 	})
-	// 	.attr('r', 3)
-	// 	.attr('transform', 'translate(' + [0, padding.t + 2] + ')')
-	// 	.attr('stroke', function(d) {
-	// 		if (d.gender == 'female') return '#ff69b4';
-	// 		if (d.gender == 'male') return '#0000ff';
-	// 	})
-	// 	.attr('fill-opacity', 0.7)
-	// 	.attr('fill', function(d) {
-			
-	// 	});
-
-	// //add brush and zoom
-	// context.append('g')
+	//add brush and zoom
+	// container.append('g')
 	// 	.attr('class', 'brush')
 	// 	.call(brush)
 	// 	.call(brush.move, x.range());
 
-	// g.append('rect')
-	// 	.attr('class', 'zoom')
-	// 	.attr('width', width)
-	// 	.attr('height', height)
-	// 	.attr('transform', 'translate(' + [padding.l, padding.t] + ')')
-	// 	.style('cursor', 'move')
-	// 	.style('fill', 'none')
-	// 	.style('pointer-events', 'all')
-	// 	.call(zoom);
+	container.append('rect')
+		.attr('class', 'zoom')
+		.attr('width', width)
+		.attr('height', height)
+		.attr('transform', 'translate(' + [padding.l, padding.t] + ')')
+		.style('cursor', 'move')
+		.style('fill', 'none')
+		.style('pointer-events', 'all')
+		.call(zoom);
 
-	// function brushed() {
-	// 	if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
-	// 	var s = d3.event.selection || x2.range();
-	// 	x.domain(s.map(x2.invert, x2));
-	// 	focus.selectAll('circle').attr('cx', function(d) { return x(d.year); });
-	// 	focus.select(".axis--x").call(xAxis);
-	// 	g.select(".zoom").call(zoom.transform, d3.zoomIdentity
-	// 		.scale(width / (s[1] - s[0]))
-	// 		.translate(-s[0], 0));
-	// }
+	function brushed() {
+		if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
+		var s = d3.event.selection || x2.range();
+		x.domain(s.map(x2.invert, x2));
+		// focus.selectAll('circle').attr('cx', function(d) { return x(d.year); });
+		// container.select("x-axis").call(x);
+		g.select(".zoom").call(zoom.transform, d3.zoomIdentity
+			.scale(width / (s[1] - s[0]))
+			.translate(-s[0], 0));
+	}
 
-	// function zoomed() {
-	// 	if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
-	// 	var t = d3.event.transform;
-	// 	x.domain(t.rescaleX(x2).domain());
-	// 	focus.select(".axis--x").call(xAxis);
-	// 	context.select(".brush").call(brush.move, x.range().map(t.invertX, t));
-	// }
-
-	// function type(d) {
-	// 	d.date = parseDate(d.date);
-	// 	return d;
-	// }
+	function zoomed() {
+		if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
+		var t = d3.event.transform;
+		x.domain(t.rescaleX(x).domain());
+		container.select("x-axis").call(x);
+		container.select(".brush").call(brush.move, x.range().map(t.invertX, t));
+	}
 }
 
 Timeline.prototype.update = function() {

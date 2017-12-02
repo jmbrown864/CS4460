@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<title>Project 5</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.9.0/css/bootstrap-slider.min.css">-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.9.0/css/bootstrap-slider.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/d3-zoomable-treemap.css">
@@ -28,11 +28,17 @@
         </div>
         <div id="timeline-container" width="840" height="800" style="padding-top:80px;">
             <a name="timelineAnchor"></a>
-            <svg id="timeline" class="timeline" width="840" height="800" style="border: 1px solid #777; padding:10px;"></svg>
+            <svg id="timeline" class="timeline" width="840" height="700" style="border: 1px solid #777; padding:10px;"></svg>
+<!--             <div style="padding: 4px 60px;">
+                <label for="yearSlider" style="margin-right:6px;">1901</label>
+                <input id="yearSlider" type="text" data-slider-min="1901" data-slider-max="2015" data-slider-step="5" data-slider-value="[1901,2015]" style="width: 800px;"/>
+                <label for="yearSlider"  style="margin-left:6px;">2015</label>
+            </div> -->
         </div>
 	</div>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.9.0/bootstrap-slider.min.js"></script>
 <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
 <script src="./js/lib/topojson.js"></script>
 <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
