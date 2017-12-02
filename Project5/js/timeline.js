@@ -26,7 +26,7 @@ Timeline.prototype.init = function(g, dataset) {
 	var zoom = d3.zoom()
 		.scaleExtent([1, Infinity])
 		.translateExtent([1, Infinity])
-		.extent([[0,0], [width, height]])
+		// .extent([[0,0], [width, height]])
 		.on('zoom', zoomed);
 
 	var tooltip = d3.tip()
@@ -182,7 +182,7 @@ Timeline.prototype.init = function(g, dataset) {
 		.attr('class', 'zoom')
 		.attr('width', width)
 		.attr('height', height)
-		.attr('transform', 'translate(' + [padding.l, padding.t] + ')')
+		// .attr('transform', 'translate(' + [padding.l, padding.t] + ')')
 		.style('cursor', 'move')
 		.style('fill', 'none')
 		.style('pointer-events', 'all')

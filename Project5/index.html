@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/d3-zoomable-treemap.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body>
     <nav class="navbar navbar-default navbar-fixed-top">
@@ -16,17 +17,25 @@
                 <a class="navbar-brand" href="#">CS 4460: P5 - Nobel Laureates</a>
             </div>
         <ul class="nav navbar-nav">
-            <li class="active"><a href="#treemapAnchor">Map</a></li>
+            <li class="active"><a href="#treemapAnchor">Treemap</a></li>
             <li><a href="#timelineAnchor">Timeline</a></li>
         </ul>
         </div>
     </nav>
+    <script>
+        $(".nav li").on("click", function() {
+          $(".nav li").removeClass("active");
+          $(this).addClass("active");
+        });
+
+    </script>
 	<div id="main">
-        <div id="treemap-container" width="840" height="800">
+        <div id="treemap-container" width="840" height="840">
             <a name="treemapAnchor"></a>
             <div id="treemap"></div>
         </div>
-        <div id="timeline-container" width="840" height="800" style="padding-top:80px;">
+        <br>
+        <div id="timeline-container" width="840" height="840" style="padding-top:80px;">
             <a name="timelineAnchor"></a>
             <svg id="timeline" class="timeline" width="840" height="700" style="border: 1px solid #777; padding:10px;"></svg>
 <!--             <div style="padding: 4px 60px;">
