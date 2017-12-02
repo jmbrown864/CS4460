@@ -133,8 +133,8 @@ function d3ZoomableTreemap(el_id, data, options) {
 
         var g = g1.selectAll("g")
             .data(d.children)
-            .enter().
-            append("g");
+            .enter()
+            .append("g");
 
         // add class and click handler to all g's with children
         g.filter(function (d) {
@@ -176,6 +176,8 @@ function d3ZoomableTreemap(el_id, data, options) {
                 ;
             })
             .attr("class", "textdiv"); //textdiv class allows us to style the text easily with CSS
+
+        
 
         function transition(d) {
             if (transitioning || !d) return;
@@ -265,7 +267,7 @@ function d3ZoomableTreemap(el_id, data, options) {
                     });
                     var childColor = d3.scaleLinear()
                         .domain([0, max])
-                        .range(["white", parentColor]);
+                        .range(["#e5e5e5", parentColor]);
                     return childColor(d.value);
                 }
                 if (d.depth === 3) {
@@ -275,7 +277,7 @@ function d3ZoomableTreemap(el_id, data, options) {
                     });
                     var childColor = d3.scaleLinear()
                         .domain([0, max])
-                        .range(["white", parentColor]);
+                        .range(["#e5e5e5", parentColor]);
                     return childColor(d.data.size);
                 }
             });
@@ -307,7 +309,6 @@ function d3ZoomableTreemap(el_id, data, options) {
 
     function breadcrumbs(d) {
         setGlobalTreemapState("current", d.data.label);
-        //console.log(d.data.label);
         var res = "";
         var sep = " > ";
         d.ancestors().reverse().forEach(function(i){
