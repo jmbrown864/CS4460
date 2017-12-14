@@ -19,15 +19,15 @@ Timeline.prototype.init = function(g, dataset) {
         .domain(["medicine", "peace", "chemistry", "literature", "physics", "economics"])
         .range(["#c2ddad", "#adc9dd", "#efab58", "#ffd026", "#d3baff", "#ed5e5e"]);
 
-    var brush = d3.brushX()
-		.extent([[0,0], [width, height]])
-		.on('brush end', brushed);
+ //    var brush = d3.brushX()
+	// 	.extent([[0,0], [width, height]])
+	// 	.on('brush end', brushed);
 
-	var zoom = d3.zoom()
-		.scaleExtent([1, Infinity])
-		.translateExtent([1, Infinity])
-		// .extent([[0,0], [width, height]])
-		.on('zoom', zoomed);
+	// var zoom = d3.zoom()
+	// 	.scaleExtent([1, Infinity])
+	// 	.translateExtent([1, Infinity])
+	// 	// .extent([[0,0], [width, height]])
+	// 	.on('zoom', zoomed);
 
 	var tooltip = d3.tip()
 		.attr('class', 'd3-tip')
@@ -57,21 +57,21 @@ Timeline.prototype.init = function(g, dataset) {
 		.rangeRound([0, height])
 		.paddingInner(0.2);
 
-	var context = g.append('g')
-		.attr('class', 'context')
-		.attr('transform', 'translate(' + [padding2.l, padding2.t] + ')')
-		.attr('width', width)
-		.attr('height', height2);
+	// var context = g.append('g')
+	// 	.attr('class', 'context')
+	// 	.attr('transform', 'translate(' + [padding2.l, padding2.t] + ')')
+	// 	.attr('width', width)
+	// 	.attr('height', height2);
 
-	context.append('g')
-		.attr('class', 'x-axis')
-		.attr('transform', 'translate(' + [0, height2] + ')')
-		.call(d3.axisBottom(x2).tickFormat(d3.format('.0f')));
+	// context.append('g')
+	// 	.attr('class', 'x-axis')
+	// 	.attr('transform', 'translate(' + [0, height2] + ')')
+	// 	.call(d3.axisBottom(x2).tickFormat(d3.format('.0f')));
 
-	context.append('g')
-		.attr('class', 'brush')
-		.call(brush)
-		.call(brush.move, x.range());
+	// context.append('g')
+	// 	.attr('class', 'brush')
+	// 	.call(brush)
+	// 	.call(brush.move, x.range());
 
 	var container = g.append('g')
 		.attr('class', 'container')
@@ -140,72 +140,35 @@ Timeline.prototype.init = function(g, dataset) {
 		.on('mouseover', tooltip.show)
 		.on('mouseout', tooltip.hide);
 
-	// function zoom(begin, end) {
-	// 	x.domain([begin, end-1]);
 
-	// 	// x.transition().duration(0).call(d3.axisBottom(x));
-	//     var t = g.transition().duration(0);
+	// container.append('rect')
+	// 	.attr('class', 'zoom')
+	// 	.attr('width', width)
+	// 	.attr('height', height)
+	// 	// .attr('transform', 'translate(' + [padding.l, padding.t] + ')')
+	// 	.style('cursor', 'move')
+	// 	.style('fill', 'none')
+	// 	.style('pointer-events', 'all')
+	// 	.call(zoom);
 
-	//     var size = end - begin;
-	//     var step = size / 10;
-	//     var ticks = [];
-	//     for (var i = 0; i <= 10; i++) {
-	//       ticks.push(Math.floor(begin + step * i));
-	//     }
-
-	//     // x.tickValues(ticks);
-
-	//     t.select("x-axis").call(x);
-
+	// function brushed() {
+	// 	if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
+	// 	var s = d3.event.selection || x2.range();
+	// 	x.domain(s.map(x2.invert, x2));
+	// 	// focus.selectAll('circle').attr('cx', function(d) { return x(d.year); });
+	// 	// container.select("x-axis").call(x);
+	// 	g.select(".zoom").call(zoom.transform, d3.zoomIdentity
+	// 		.scale(width / (s[1] - s[0]))
+	// 		.translate(-s[0], 0));
 	// }
 
-	// // Creates a bootstrap-slider element
-	// $("#yearSlider").slider({
-	//     tooltip: 'always',
-	//     tooltip_position:'bottom',
-	// });
-	// // Listens to the on "change" event for the slider
-	// $("#yearSlider").on('change', function(event){
-	//     // Update the chart on the new value
-	//     // updateChart(event.value.newValue);
-	//     console.log(event.value.newValue);
-	//     zoom(event.value.newValue[0], event.value.newValue[1]);
-	// });
-
-	//add brush and zoom
-	// container.append('g')
-	// 	.attr('class', 'brush')
-	// 	.call(brush)
-	// 	.call(brush.move, x.range());
-
-	container.append('rect')
-		.attr('class', 'zoom')
-		.attr('width', width)
-		.attr('height', height)
-		// .attr('transform', 'translate(' + [padding.l, padding.t] + ')')
-		.style('cursor', 'move')
-		.style('fill', 'none')
-		.style('pointer-events', 'all')
-		.call(zoom);
-
-	function brushed() {
-		if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
-		var s = d3.event.selection || x2.range();
-		x.domain(s.map(x2.invert, x2));
-		// focus.selectAll('circle').attr('cx', function(d) { return x(d.year); });
-		// container.select("x-axis").call(x);
-		g.select(".zoom").call(zoom.transform, d3.zoomIdentity
-			.scale(width / (s[1] - s[0]))
-			.translate(-s[0], 0));
-	}
-
-	function zoomed() {
-		if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
-		var t = d3.event.transform;
-		x.domain(t.rescaleX(x).domain());
-		container.select("x-axis").call(x);
-		container.select(".brush").call(brush.move, x.range().map(t.invertX, t));
-	}
+	// function zoomed() {
+	// 	if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
+	// 	var t = d3.event.transform;
+	// 	x.domain(t.rescaleX(x).domain());
+	// 	container.select("x-axis").call(x);
+	// 	container.select(".brush").call(brush.move, x.range().map(t.invertX, t));
+	// }
 }
 
 Timeline.prototype.update = function() {
